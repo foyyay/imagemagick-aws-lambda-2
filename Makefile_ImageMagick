@@ -4,6 +4,7 @@ OPENJP2_VERSION ?= 2.5.0
 LIBTIFF_VERSION ?= 4.5.0
 BZIP2_VERSION ?= 1.0.6
 LIBWEBP_VERSION ?= 1.3.0
+LIBXML_VERSION ?= 2.9.9
 IMAGEMAGICK_VERSION ?= 7.1.1-8
 
 TARGET_DIR ?= /opt/
@@ -31,6 +32,22 @@ $(LIBJPG_SOURCE):
 $(CACHE_DIR)/lib/libjpeg.a: $(LIBJPG_SOURCE)
 	tar xf $<
 	cd jpeg*
+	$(CONFIGURE)
+	make
+	make install
+
+## libxml
+
+LIBXML_VERSION_PARTS=$(wordlist 1,2,$(subst ., ,$(LIBXML_VERSION)))
+LIBXML_DIR=$(join $(firstword $(LIBXML_VERSION_PARTS)),$(join .,$(word 2,$(LIBXML_VERSION_PARTS))))
+LIBXML_SOURCE=libxml2-$(LIBXML_VERSION).tar.xz
+
+$(LIBXML_SOURCE):
+	curl -k -LO https://download.gnome.org/sources/libxml2/$(LIBXML_DIR)/$(LIBXML_SOURCE)
+
+$(CACHE_DIR)/lib/libxml2.a: $(LIBXML_SOURCE)
+	tar xf $<
+	cd libxml2*
 	$(CONFIGURE)
 	make
 	make install
@@ -123,6 +140,7 @@ $(IMAGE_MAGICK_SOURCE):
 
 
 LIBS:=$(CACHE_DIR)/lib/libjpeg.a \
+	$(CACHE_DIR)/lib/libxml2.a \
 	$(CACHE_DIR)/lib/libpng.a \
 	$(CACHE_DIR)/lib/libopenjp2.a \
 	$(CACHE_DIR)/lib/libtiff.a \
