@@ -23,6 +23,8 @@ Resources:
 
   ImageMagickLayerPermission:
     Type: AWS::Lambda::LayerVersionPermission
+    DeletionPolicy: Retain
+    UpdateReplacePolicy: Retain
     Condition: WritePermissions
     Properties:
       Action: lambda:GetLayerVersion
